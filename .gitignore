@@ -89,6 +89,8 @@ sw.*
 # Vim swap files
 *.swp
 
-# repository
-repo
-assets/data.json
+# Epiphyllum
+epiphyllum.config.ts
+
+# yarn
+yarn.lock

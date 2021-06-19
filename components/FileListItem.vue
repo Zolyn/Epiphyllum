@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Files } from '~/scripts/generateDirTree'
+import { Files } from '~/epiphyllum/utils'
 
 @Component
 export default class FileListItem extends Vue {
