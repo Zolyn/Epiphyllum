@@ -47,16 +47,13 @@
     </v-main>
     <v-footer app absolute padless>
       <v-container>
-        <v-row
-          v-for="(item, key) in footer"
-          :key="'footer' + key"
-          no-gutters
-          justify="center"
-          align="center"
-          class="text-center"
-        >
-          <v-col>
-            {{ item }}
+        <v-row no-gutters justify="center" align="center" class="text-center">
+          <v-col cols="12">
+            {{ `© Zorin 💖 2021-${new Date().getFullYear()}` }}
+          </v-col>
+          <v-col cols="12">
+            {{ title }} ✨ Built with <a href="https://nuxtjs.org">Nuxt</a> and
+            <a href="https://vuetifyjs.com">Vuetify</a>
           </v-col>
         </v-row>
       </v-container>
@@ -78,7 +75,7 @@ export default class DefaultLayout extends Vue {
     },
   ]
 
-  private miniVariant = false
+  private miniVariant = true
   private icons = {
     left: 'mdi-chevron-left',
     right: 'mdi-chevron-right',
@@ -87,9 +84,5 @@ export default class DefaultLayout extends Vue {
   }
 
   private title = 'Epiphyllum'
-  private footer = [
-    `© Zorin 💖 2021-${new Date().getFullYear()}`,
-    'Built with Nuxt.js, Vuetify.js and LOVE',
-  ]
 }
 </script>
