@@ -3,21 +3,28 @@
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
-      :clipped="clipped"
       fixed
       app
       temporary
     >
       <v-list>
+        <v-list-item>
+          <v-list-item-action>
+            <v-btn icon @click.stop="miniVariant = !miniVariant">
+              <v-icon v-text="miniVariant ? icons.right : icons.left"></v-icon>
+            </v-btn>
+          </v-list-item-action>
+          <v-list-item-title> Mini variant </v-list-item-title>
+        </v-list-item>
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
           :to="item.to"
-          router
+          nuxt
           exact
         >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon v-text="item.icon"></v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="item.title" />
@@ -25,25 +32,20 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app elevate-on-scroll dense>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
+    <v-app-bar fixed app elevate-on-scroll>
+      <v-app-bar-nav-icon id="appbaricon" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+      <v-spacer></v-spacer>
+      <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+        <v-icon v-text="$vuetify.theme.dark ? icons.sun : icons.night"></v-icon>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-footer :absolute="!fixed" app padless>
+    <v-footer app absolute padless>
       <v-container>
         <v-row
           v-for="(item, key) in footer"
@@ -67,25 +69,23 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component
 export default class DefaultLayout extends Vue {
-  private clipped = false
   private drawer = false
-  private fixed = false
   private items = [
     {
-      icon: 'mdi-apps',
-      title: 'Welcome',
+      icon: 'mdi-home',
+      title: 'Home',
       to: '/',
-    },
-    {
-      icon: 'mdi-chart-bubble',
-      title: 'Inspire',
-      to: '/inspire',
     },
   ]
 
   private miniVariant = false
-  private right = false
-  private rightDrawer = false
+  private icons = {
+    left: 'mdi-chevron-left',
+    right: 'mdi-chevron-right',
+    sun: 'mdi-weather-sunny',
+    night: 'mdi-weather-night',
+  }
+
   private title = 'Epiphyllum'
   private footer = [
     `© Zorin 💖 2021-${new Date().getFullYear()}`,
