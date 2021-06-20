@@ -4,17 +4,18 @@ import {
   DirectoryMap,
   E,
   FileMeta,
-  Files,
-  LiteLogger as Logger,
+  FileMetaList,
   TE,
+  transformBytes,
+  transformTime,
 } from './utils'
 import { UpyunSdk } from '~/epiphyllum/types'
 
 interface USSListFile {
   name: string
   type: 'N' | 'F'
-  size: BigInt
-  time: BigInt
+  size: number
+  time: number
 }
 
 interface USSListResult {
@@ -41,32 +42,8 @@ async function getUSSDirectoryTree({
 
   const directoryMap: DirectoryMap = new Map()
 
-  // async function getDirectoryMap(path: string): Promise<void> {
-  //   const files
-  //   const [err, currentFiles] = await awaitHelper<USSListResult | false>(
-  //     client.listDir(path)
-  //   )
-  //
-  //   if (!currentFiles) {
-  //     if (typeof currentFiles === 'boolean') {
-  //       throw TE('No such file or directory.')
-  //     }
-  //
-  //     throw E(err)
-  //   }
-  //
-  //   for (const { type, name } of currentFiles.files) {
-  //     if (type === 'N') {
-  //
-  //     } else {
-  //       type
-  //     }
-  //   }
-  // }
-
-
-  async function getDirectoryTree(path: string): Promise<Files> {
-    const result: Files = []
+  async function getDirectoryMap(path: string): Promise<void> {
+    const fileMetaList: FileMetaList = []
     const [err, currentFiles] = await awaitHelper<USSListResult | false>(
       client.listDir(path)
     )
@@ -79,57 +56,37 @@ async function getUSSDirectoryTree({
       throw E(err)
     }
 
-    for (const { type, name } of currentFiles.files) {
-      switch (type) {
-        case 'N': {
-          result.push({
-            isDir: false,
-            pathname: name,
-          })
-
-          break
-        }
-
-        case 'F': {
-          const fullPath = join(path, name)
-          Logger.info(fullPath)
-          const [err, files] = await awaitHelper(getDirectoryTree(fullPath))
-
-          if (!files) {
-            throw E(err)
-          }
-
-          const directory: FileMeta = {
-            isDir: true,
-            pathname: name,
-            files,
-          }
-
-          result.push(directory)
-          directoryMap.set(fullPath, directory)
-
-          break
-        }
+    for (const { type: fileType, name, time, size } of currentFiles.files) {
+      console.log(size)
+      console.log(time)
+      const fileMeta: FileMeta = {
+        isDir: false,
+        pathname: name,
+        time: transformTime(time),
+        size: transformBytes(size),
       }
+
+      if (fileType === 'F') {
+        const fullPath = join(path, name)
+        const [err] = await awaitHelper(getDirectoryMap(fullPath))
+
+        if (err) {
+          throw E(err)
+        }
+
+        fileMeta.isDir = true
+      }
+
+      fileMetaList.push(fileMeta)
     }
 
-    return result
+    directoryMap.set(path, {
+      pathname: path,
+      files: fileMetaList,
+    })
   }
 
-  const [treeErr, dirTree] = await awaitHelper(getDirectoryTree('/'))
-
-  if (!dirTree) {
-    throw E(treeErr)
-  }
-
-  const USSDirTree: FileMeta = {
-    isDir: true,
-    pathname: '/',
-    files: dirTree,
-  }
-
-  directoryMap.set('/', USSDirTree)
-
+  await getDirectoryMap('/')
   return directoryMap
 }
 
