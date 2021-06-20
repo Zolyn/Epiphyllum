@@ -1,11 +1,7 @@
-import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
-import {
-  awaitHelper,
-  DirectoryMap,
-  LiteLogger as Logger,
-} from '~/epiphyllum/utils'
+import { Component } from 'vue-property-decorator'
+import { awaitHelper, LiteLogger as Logger } from '~/epiphyllum/utils'
 import { EpiphyllumEntry } from '~/epiphyllum/main'
+import EpiphyllumStore from '~/epiphyllum/store'
 
 @Component({
   async fetch({ store }) {
@@ -25,11 +21,5 @@ import { EpiphyllumEntry } from '~/epiphyllum/main'
     store.commit('epiphyllum/setDirMap', result)
     store.commit('epiphyllum/initialize')
   },
-  computed: mapState('epiphyllum', {
-    // @ts-ignore
-    directoryMap: (state) => state.directoryMap,
-  }),
 })
-export default class EpiphyllumFetch extends Vue {
-  protected directoryMap!: DirectoryMap
-}
+export default class EpiphyllumFetch extends EpiphyllumStore {}

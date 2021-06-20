@@ -57,13 +57,13 @@ async function getUSSDirectoryTree({
     }
 
     for (const { type: fileType, name, time, size } of currentFiles.files) {
-      console.log(size)
-      console.log(time)
       const fileMeta: FileMeta = {
         isDir: false,
         pathname: name,
-        time: transformTime(time),
-        size: transformBytes(size),
+        transformedTime: transformTime(time),
+        transformedSize: transformBytes(size),
+        time,
+        size,
       }
 
       if (fileType === 'F') {

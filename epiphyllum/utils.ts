@@ -1,10 +1,10 @@
 interface FileMeta {
   isDir: boolean
   pathname: string
-  time: string
-  size: string
-  rawTime: number
-  rawSize: number
+  time: number
+  size: number
+  transformedTime: string
+  transformedSize: string
 }
 
 interface DirectoryMeta {
@@ -22,8 +22,13 @@ interface BreadCrumbItem {
   href: string
 }
 
+type BreadCrumbs = BreadCrumbItem[]
+
+type sortMode = 'normal' | 'time-asc' | 'time-desc' | 'size-asc' | 'size-desc'
+
 interface GroupItem {
   title: string
+  mode: sortMode
   icon: string
 }
 
@@ -33,7 +38,15 @@ interface Group {
   items: GroupItem[]
 }
 
-type BreadCrumbs = BreadCrumbItem[]
+interface SortStatus {
+  mode: sortMode
+  icon:
+    | 'sort'
+    | 'calendar-ascending'
+    | 'calendar-descending'
+    | 'sort-ascending'
+    | 'sort-descending'
+}
 
 /**
  * await帮助函数，帮助捕获异常
@@ -116,6 +129,7 @@ export {
   BreadCrumbItem,
   BreadCrumbs,
   Group,
+  SortStatus,
   transformTime,
   transformBytes,
   E,
