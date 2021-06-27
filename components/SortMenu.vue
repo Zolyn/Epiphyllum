@@ -1,15 +1,19 @@
 <template>
   <v-menu
-    open-on-hover
     transition="scale-transition"
     :close-delay="closeDelay"
     :close-on-content-click="closeOnContentClick"
     @input="handleInput"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn icon v-bind="attrs" v-on="on">
-        <v-icon dense v-text="`mdi-${sortStatus.icon}`"></v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip top>
+        <template #activator="{ on: tooltip }">
+          <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+            <v-icon dense v-text="currentMenuIcon"></v-icon>
+          </v-btn>
+        </template>
+        Sort
+      </v-tooltip>
     </template>
     <v-list>
       <v-list-group
@@ -23,26 +27,34 @@
           <v-list-item-title v-text="group.title"></v-list-item-title>
         </template>
         <v-list-item
-          v-for="({ title, icon }, itemIndex) in group.items"
+          v-for="(item, itemIndex) in group.items"
           :key="'groupitem' + itemIndex"
           link
-          @click="handleGroupItemClick"
+          @click="handleGroupItemClick(item)"
         >
           <v-list-item-icon>
-            <v-icon v-text="icon"></v-icon>
+            <v-icon v-text="item.icon"></v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="title"></v-list-item-title>
+            <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
+      <v-list-item @click="fallback">
+        <v-list-item-icon>
+          <v-icon>mdi-sort</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Normal</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { Group, SortStatus } from '~/epiphyllum/utils'
+import { Group, GroupItem } from '~/epiphyllum/utils'
 
 @Component
 export default class SortMenu extends Vue {
@@ -51,18 +63,18 @@ export default class SortMenu extends Vue {
   private listGroupStatus: boolean | undefined = false
   private listGroups: Group[] = [
     {
-      prependIcon: 'mdi-calendar',
+      prependIcon: 'mdi-clock',
       title: 'Sort by time',
       items: [
         {
           title: 'Ascending',
           mode: 'time-asc',
-          icon: 'mdi-sort-calendar-ascending',
+          icon: 'mdi-sort-clock-ascending',
         },
         {
           title: 'Descending',
           mode: 'time-desc',
-          icon: 'mdi-sort-calendar-descending',
+          icon: 'mdi-sort-clock-descending',
         },
       ],
     },
@@ -84,25 +96,30 @@ export default class SortMenu extends Vue {
     },
   ]
 
-  private sortStatus: SortStatus = {
-    mode: 'normal',
-    icon: 'sort',
-  }
+  private currentMenuIcon = 'mdi-sort'
 
-  private handleGroupItemClick() {
+  private handleGroupItemClick(item: GroupItem): void {
     this.closeOnContentClick = true
+    this.$store.commit('epiphyllum/changeSortMode', item.mode)
+    this.currentMenuIcon = item.icon
   }
 
-  private handleGroupClick() {
+  private handleGroupClick(): void {
     this.closeOnContentClick = false
   }
 
-  private handleInput(bool: boolean) {
+  private handleInput(bool: boolean): void {
     if (bool) {
       this.listGroupStatus = undefined
     } else {
       this.listGroupStatus = bool
     }
+  }
+
+  private fallback(): void {
+    this.closeOnContentClick = true
+    this.$store.commit('epiphyllum/changeSortMode', 'normal')
+    this.currentMenuIcon = 'mdi-sort'
   }
 }
 </script>

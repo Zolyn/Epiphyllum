@@ -38,7 +38,7 @@ export default class FileListItem extends EpiphyllumStore {
     file: 'mdi-file-cloud',
   }
 
-  get handledList(): FileMetaList {
+  private get handledList(): FileMetaList {
     return this.folderList.concat(this.fileList)
   }
 
@@ -47,19 +47,43 @@ export default class FileListItem extends EpiphyllumStore {
   }
 
   private get folderList(): FileMetaList {
-    if (this.currentDirMeta) {
-      return this.currentDirMeta.files.filter((val) => val.isDir)
+    if (!this.currentDirMeta) {
+      return []
     }
 
-    return []
+    return this.sortList(this.currentDirMeta.files.filter((val) => val.isDir))
   }
 
   private get fileList(): FileMetaList {
-    if (this.currentDirMeta) {
-      return this.currentDirMeta.files.filter((val) => !val.isDir)
+    if (!this.currentDirMeta) {
+      return []
     }
 
-    return []
+    return this.sortList(this.currentDirMeta.files.filter((val) => !val.isDir))
+  }
+
+  private sortList(list: FileMetaList): FileMetaList {
+    switch (this.sortMode) {
+      case 'time-asc': {
+        return list.sort((a, b) => a.time - b.time)
+      }
+
+      case 'time-desc': {
+        return list.sort((a, b) => b.time - a.time)
+      }
+
+      case 'size-asc': {
+        return list.sort((a, b) => a.size - b.size)
+      }
+
+      case 'size-desc': {
+        return list.sort((a, b) => b.size - a.size)
+      }
+
+      default: {
+        return list
+      }
+    }
   }
 
   private handleClick({ pathname, isDir }: FileMeta): void {

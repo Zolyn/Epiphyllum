@@ -45,19 +45,6 @@
         <nuxt />
       </v-container>
     </v-main>
-    <v-footer app absolute padless>
-      <v-container>
-        <v-row no-gutters justify="center" align="center" class="text-center">
-          <v-col cols="12">
-            {{ `© Zorin 💖 2021-${new Date().getFullYear()}` }}
-          </v-col>
-          <v-col cols="12">
-            {{ title }} ✨ Built with <a href="https://nuxtjs.org">Nuxt</a> and
-            <a href="https://vuetifyjs.com">Vuetify</a>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-footer>
   </v-app>
 </template>
 

@@ -24,7 +24,7 @@ interface USSListResult {
 }
 
 async function getUSSDirectoryTree({
-  service: serviceName,
+  service,
   operator,
   password,
 }: UpyunSdk): Promise<DirectoryMap> {
@@ -32,13 +32,17 @@ async function getUSSDirectoryTree({
   // 导入又拍云 node-sdk
   const [importErr, upyun] = await awaitHelper(import('upyun'))
 
+  const serviceName = service ?? process.env.UPYUN_SERVICE
+  const operatorName = operator ?? process.env.UPYUN_OPERATOR
+  const pass = password ?? process.env.UPYUN_PASSWORD
+
   if (!upyun) {
     throw importErr
   }
 
-  const service = new upyun.Service(serviceName, operator, password)
+  const instance = new upyun.Service(serviceName, operatorName, pass)
 
-  const client = new upyun.Client(service)
+  const client = new upyun.Client(instance)
 
   const directoryMap: DirectoryMap = new Map()
 

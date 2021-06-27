@@ -24,11 +24,13 @@ interface BreadCrumbItem {
 
 type BreadCrumbs = BreadCrumbItem[]
 
-type sortMode = 'normal' | 'time-asc' | 'time-desc' | 'size-asc' | 'size-desc'
+type SortMode = 'normal' | 'time-asc' | 'time-desc' | 'size-asc' | 'size-desc'
+
+type ViewMode = 'all' | 'files' | 'directories'
 
 interface GroupItem {
   title: string
-  mode: sortMode
+  mode: SortMode
   icon: string
 }
 
@@ -39,7 +41,7 @@ interface Group {
 }
 
 interface SortStatus {
-  mode: sortMode
+  mode: SortMode
   icon:
     | 'sort'
     | 'calendar-ascending'
@@ -129,7 +131,10 @@ export {
   BreadCrumbItem,
   BreadCrumbs,
   Group,
+  GroupItem,
   SortStatus,
+  SortMode,
+  ViewMode,
   transformTime,
   transformBytes,
   E,
