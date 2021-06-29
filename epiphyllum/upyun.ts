@@ -32,15 +32,11 @@ async function getUSSDirectoryTree({
   // 导入又拍云 node-sdk
   const [importErr, upyun] = await awaitHelper(import('upyun'))
 
-  const serviceName = service ?? process.env.UPYUN_SERVICE
-  const operatorName = operator ?? process.env.UPYUN_OPERATOR
-  const pass = password ?? process.env.UPYUN_PASSWORD
-
   if (!upyun) {
     throw importErr
   }
 
-  const instance = new upyun.Service(serviceName, operatorName, pass)
+  const instance = new upyun.Service(service, operator, password)
 
   const client = new upyun.Client(instance)
 
