@@ -24,6 +24,7 @@
   "dependencies": {
     "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/pwa": "3.3.5",
+    "@nuxtjs/vercel-builder": "^0.21.3",
     "core-js": "3.14.0",
     "nuxt": "2.15.7",
     "upyun": "3.4.4",
