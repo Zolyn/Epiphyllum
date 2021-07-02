@@ -35,7 +35,11 @@
     <v-app-bar fixed app elevate-on-scroll>
       <v-app-bar-nav-icon id="appbaricon" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+      <bread-crumbs-nav></bread-crumbs-nav>
       <v-spacer></v-spacer>
+      <path-edit></path-edit>
+      <view-mode></view-mode>
+      <sort-menu></sort-menu>
       <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
         <v-icon v-text="$vuetify.theme.dark ? icons.sun : icons.night"></v-icon>
       </v-btn>
@@ -50,8 +54,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import BreadCrumbsNav from '~/components/BreadCrumbsNav.vue'
+import SortMenu from '~/components/SortMenu.vue'
+import PathEdit from '~/components/PathEdit.vue'
+import ViewMode from '~/components/ViewMode.vue'
 
-@Component
+@Component({
+  components: {
+    BreadCrumbsNav,
+    SortMenu,
+    PathEdit,
+    ViewMode,
+  },
+})
 export default class DefaultLayout extends Vue {
   private drawer = false
   private items = [

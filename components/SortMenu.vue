@@ -1,55 +1,54 @@
 <template>
-  <v-menu
-    transition="scale-transition"
-    :close-delay="closeDelay"
-    :close-on-content-click="closeOnContentClick"
-    @input="handleInput"
-  >
-    <template #activator="{ on: menu, attrs }">
-      <v-tooltip top>
-        <template #activator="{ on: tooltip }">
-          <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">
-            <v-icon dense v-text="currentMenuIcon"></v-icon>
-          </v-btn>
-        </template>
-        Sort
-      </v-tooltip>
-    </template>
-    <v-list>
-      <v-list-group
-        v-for="(group, index) in listGroups"
-        :key="'group' + index"
-        :value="listGroupStatus"
-        :prepend-icon="group.prependIcon"
-        @click="handleGroupClick"
-      >
-        <template #activator>
-          <v-list-item-title v-text="group.title"></v-list-item-title>
-        </template>
-        <v-list-item
-          v-for="(item, itemIndex) in group.items"
-          :key="'groupitem' + itemIndex"
-          link
-          @click="handleGroupItemClick(item)"
+  <div id="sort-menu">
+    <v-menu
+      transition="scale-transition"
+      :close-delay="closeDelay"
+      :close-on-content-click="closeOnContentClick"
+      open-on-hover
+      open-delay="200"
+      @input="handleInput"
+    >
+      <template #activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on">
+          <v-icon dense v-text="currentMenuIcon"></v-icon>
+        </v-btn>
+      </template>
+      <v-list dense nav>
+        <v-list-group
+          v-for="(group, index) in listGroups"
+          :key="'group' + index"
+          :value="listGroupStatus"
+          :prepend-icon="group.prependIcon"
+          @click="handleGroupClick"
         >
+          <template #activator>
+            <v-list-item-title v-text="group.title"></v-list-item-title>
+          </template>
+          <v-list-item
+            v-for="(item, itemIndex) in group.items"
+            :key="'groupitem' + itemIndex"
+            link
+            @click="handleGroupItemClick(item)"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-list-item @click="fallback">
           <v-list-item-icon>
-            <v-icon v-text="item.icon"></v-icon>
+            <v-icon>mdi-sort</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
+            <v-list-item-title>Normal</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list-group>
-      <v-list-item @click="fallback">
-        <v-list-item-icon>
-          <v-icon>mdi-sort</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Normal</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+      </v-list>
+    </v-menu>
+  </div>
 </template>
 
 <script lang="ts">

@@ -5,27 +5,6 @@
         <v-row align="center" justify="center">
           <v-col cols="11">
             <v-list>
-              <v-list-item>
-                <bread-crumbs-nav></bread-crumbs-nav>
-                <v-spacer></v-spacer>
-                <v-tooltip top>
-                  <template #activator="{ on, attrs }">
-                    <v-icon
-                      v-bind="attrs"
-                      style="right: 1rem"
-                      v-on="on"
-                      v-text="'mdi-folder-table'"
-                    ></v-icon>
-                  </template>
-                  <span>Folder</span>
-                </v-tooltip>
-                <sort-menu></sort-menu>
-              </v-list-item>
-              <v-divider></v-divider>
-            </v-list>
-          </v-col>
-          <v-col cols="11">
-            <v-list>
               <v-list-item-group color="primary">
                 <parent-directory></parent-directory>
                 <file-list-item></file-list-item>
