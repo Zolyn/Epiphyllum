@@ -14,7 +14,7 @@ export default class ViewMode extends Vue {
   private icons = ['mdi-folder-table', 'mdi-file', 'mdi-folder']
 
   private changeMode(): void {
-    this.icons.push(this.icons.shift())
+    this.icons.push(this.icons.shift() as string)
   }
 }
 </script>
