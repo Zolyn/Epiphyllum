@@ -14,7 +14,7 @@
               <v-icon v-text="miniVariant ? icons.right : icons.left"></v-icon>
             </v-btn>
           </v-list-item-action>
-          <v-list-item-title> Mini variant </v-list-item-title>
+          <v-list-item-title> 最小化 </v-list-item-title>
         </v-list-item>
         <v-list-item
           v-for="(item, i) in items"
@@ -32,23 +32,45 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar fixed app elevate-on-scroll>
+    <v-app-bar dense fixed app elevate-on-scroll>
       <v-app-bar-nav-icon id="appbaricon" @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
-      <bread-crumbs-nav></bread-crumbs-nav>
       <v-spacer></v-spacer>
-      <path-edit></path-edit>
-      <view-mode></view-mode>
-      <sort-menu></sort-menu>
+      <v-btn icon>
+        <v-icon>mdi-file-tree</v-icon>
+      </v-btn>
       <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
         <v-icon v-text="$vuetify.theme.dark ? icons.sun : icons.night"></v-icon>
       </v-btn>
+      <template #extension>
+        <v-app-bar-nav-icon style="visibility: hidden"></v-app-bar-nav-icon>
+        <v-icon>mdi-folder</v-icon>
+        <bread-crumbs-nav></bread-crumbs-nav>
+        <v-spacer></v-spacer>
+        <path-edit></path-edit>
+        <sort-menu></sort-menu>
+        <view-mode></view-mode>
+      </template>
     </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
+    <v-footer absolute app padless>
+      <v-container>
+        <v-row justify="center" align="center" class="text-center">
+          <v-col>
+            <span> © Zorin 💖 2021 </span>
+            <br />
+            <span>
+              Epiphyllum ✨ 使用 <a href="https://nuxtjs.org">Nuxt</a> 及
+              <a href="https://vuetifyjs.com">Vuetify</a> 构建
+            </span>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-footer>
   </v-app>
 </template>
 

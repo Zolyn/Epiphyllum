@@ -63,31 +63,31 @@ export default class SortMenu extends Vue {
   private listGroups: Group[] = [
     {
       prependIcon: 'mdi-clock',
-      title: 'Sort by time',
+      title: '修改时间',
       items: [
         {
-          title: 'Ascending',
+          title: '升序',
           mode: 'time-asc',
           icon: 'mdi-sort-clock-ascending',
         },
         {
-          title: 'Descending',
+          title: '降序',
           mode: 'time-desc',
           icon: 'mdi-sort-clock-descending',
         },
       ],
     },
     {
-      title: 'Sort by size',
+      title: '大小',
       prependIcon: 'mdi-database',
       items: [
         {
-          title: 'Ascending',
+          title: '升序',
           mode: 'size-asc',
           icon: 'mdi-sort-ascending',
         },
         {
-          title: 'Descending',
+          title: '降序',
           mode: 'size-desc',
           icon: 'mdi-sort-descending',
         },
