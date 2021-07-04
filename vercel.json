@@ -11,7 +11,7 @@
   ],
   "routes": [
     {
-      "src": "/sw.js",
+      "src": "/static/sw.js",
       "continue": true,
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate",
