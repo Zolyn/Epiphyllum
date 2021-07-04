@@ -1,5 +1,6 @@
 {
   "name": "epiphyllum",
+  "description": "OSS file index generator.",
   "version": "1.0.0",
   "private": true,
   "scripts": {
