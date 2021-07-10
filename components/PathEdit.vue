@@ -19,6 +19,7 @@
                     v-model="inputValue"
                     :rules="[rules.required]"
                     label="更改当前路径至"
+                    prepend-icon="mdi-folder"
                     clearable
                   ></v-text-field>
                 </v-form>
@@ -53,7 +54,7 @@ interface Rules extends Record<'required', ValidateFunc> {}
 @Component
 export default class PathEdit extends Vue {
   private dialog = false
-  private pencil = 'mdi-pencil'
+  private pencil = 'mdi-folder-edit'
   private inputValue = '/'
   private valid = true
   private rules: Rules = {
