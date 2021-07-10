@@ -1,18 +1,26 @@
 <template>
-  <v-breadcrumbs :items="breadcrumbs" large>
-    <template #divider>
-      <v-icon v-text="arrow"></v-icon>
-    </template>
-    <template #item="{ item }">
-      <v-breadcrumbs-item
-        :href="item.href"
-        :disabled="item.disabled"
-        @click.prevent="$router.push(item.href)"
-      >
-        {{ item.text }}
-      </v-breadcrumbs-item>
-    </template>
-  </v-breadcrumbs>
+  <div id="breadcrumbs-nav">
+    <v-slide-group v-model="value">
+      <v-breadcrumbs :items="breadcrumbs" large>
+        <template #divider>
+          <v-slide-item>
+            <v-icon v-text="arrow"></v-icon>
+          </v-slide-item>
+        </template>
+        <template #item="{ item }">
+          <v-slide-item>
+            <v-breadcrumbs-item
+              :href="item.href"
+              :disabled="item.disabled"
+              @click.prevent="pushRouter(item.href)"
+            >
+              {{ item.text }}
+            </v-breadcrumbs-item>
+          </v-slide-item>
+        </template>
+      </v-breadcrumbs>
+    </v-slide-group>
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,6 +31,7 @@ import { BreadCrumbs } from '~/epiphyllum/utils'
 @Component
 export default class BreadCrumbsNav extends Vue {
   private arrow = 'mdi-chevron-right'
+  private value = 1
 
   private get breadcrumbs(): BreadCrumbs {
     const path = this.$route.path
@@ -53,6 +62,16 @@ export default class BreadCrumbsNav extends Vue {
     breadcrumbList[breadcrumbList.length - 1].disabled = true
 
     return breadcrumbList
+  }
+
+  private pushRouter(path: string): void {
+    this.$router.push(path)
+  }
+
+  private mounted(): void {
+    this.$router.afterEach((): void => {
+      this.value = Math.floor(Math.random() * 10)
+    })
   }
 }
 </script>
