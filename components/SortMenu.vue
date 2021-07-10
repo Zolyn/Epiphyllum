@@ -1,8 +1,8 @@
 <template>
   <div id="sort-menu">
     <v-menu
-      transition="scale-transition"
-      :close-delay="closeDelay"
+      transition="slide-y-transition"
+      close-delay="100"
       :close-on-content-click="closeOnContentClick"
       open-on-hover
       open-delay="200"
@@ -57,7 +57,6 @@ import { Group, GroupItem } from '~/epiphyllum/utils'
 
 @Component
 export default class SortMenu extends Vue {
-  private closeDelay = 100
   private closeOnContentClick = false
   private listGroupStatus: boolean | undefined = false
   private listGroups: Group[] = [
