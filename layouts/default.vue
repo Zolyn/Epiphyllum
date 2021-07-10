@@ -39,8 +39,8 @@
       <v-btn icon>
         <v-icon>mdi-file-tree</v-icon>
       </v-btn>
-      <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
-        <v-icon v-text="$vuetify.theme.dark ? icons.sun : icons.night"></v-icon>
+      <v-btn icon @click="changeColorScheme">
+        <v-icon v-text="getSchemeIcon"></v-icon>
       </v-btn>
       <template #extension>
         <v-app-bar-nav-icon style="visibility: hidden"></v-app-bar-nav-icon>
@@ -75,11 +75,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import BreadCrumbsNav from '~/components/BreadCrumbsNav.vue'
 import SortMenu from '~/components/SortMenu.vue'
 import PathEdit from '~/components/PathEdit.vue'
 import ViewMode from '~/components/ViewMode.vue'
+import EpiphyllumStore from '~/epiphyllum/store'
+import { ColorScheme } from '~/epiphyllum/utils'
 
 @Component({
   components: {
@@ -89,7 +91,7 @@ import ViewMode from '~/components/ViewMode.vue'
     ViewMode,
   },
 })
-export default class DefaultLayout extends Vue {
+export default class DefaultLayout extends EpiphyllumStore {
   private drawer = false
   private items = [
     {
@@ -103,10 +105,64 @@ export default class DefaultLayout extends Vue {
   private icons = {
     left: 'mdi-chevron-left',
     right: 'mdi-chevron-right',
-    sun: 'mdi-weather-sunny',
-    night: 'mdi-weather-night',
+  }
+
+  private colorSchemes = ['light', 'dark', 'system']
+
+  private get getSchemeIcon(): string {
+    if (this.preferColorScheme === 'system') {
+      return 'mdi-desktop-mac'
+    } else if (this.$vuetify.theme.dark) {
+      return 'mdi-weather-night'
+    }
+
+    return 'mdi-weather-sunny'
   }
 
   private title = 'Epiphyllum'
+
+  private changeColorScheme(): void {
+    this.colorSchemes.push(this.colorSchemes.shift() as string)
+    this.$store.commit('epiphyllum/changeColorScheme', this.colorSchemes[0])
+  }
+
+  private getSystemColorScheme(): ColorScheme {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark'
+    } else {
+      return 'light'
+    }
+  }
+
+  private setColorScheme(scheme: ColorScheme): void {
+    if (scheme === 'system') {
+      this.$vuetify.theme.dark = this.getSystemColorScheme() === 'dark'
+    } else {
+      this.$vuetify.theme.dark = scheme === 'dark'
+    }
+  }
+
+  private mounted(): void {
+    const that = this
+    if (this.preferColorScheme === 'system') {
+      this.colorSchemes.unshift(this.colorSchemes.pop() as string)
+    } else if (this.preferColorScheme === 'dark') {
+      this.colorSchemes.push(this.colorSchemes.shift() as string)
+    }
+
+    this.setColorScheme(this.preferColorScheme)
+    window
+      .matchMedia('(prefers-color-scheme)')
+      .addEventListener('change', () => {
+        if (that.preferColorScheme === 'system') {
+          that.setColorScheme(that.preferColorScheme)
+        }
+      })
+  }
+
+  @Watch('preferColorScheme')
+  private onColorSchemeChanged(): void {
+    this.setColorScheme(this.preferColorScheme)
+  }
 }
 </script>
