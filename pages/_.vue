@@ -21,16 +21,12 @@
 import { Component } from 'vue-property-decorator'
 import FileListItem from '~/components/FileListItem.vue'
 import ParentDirectory from '~/components/ParentDirectory.vue'
-import BreadCrumbsNav from '~/components/BreadCrumbsNav.vue'
-import SortMenu from '~/components/SortMenu.vue'
 import EpiphyllumFetch from '~/epiphyllum/fetch'
 
 @Component({
   components: {
     FileListItem,
     ParentDirectory,
-    BreadCrumbsNav,
-    SortMenu,
   },
 })
 export default class FileIndexPage extends EpiphyllumFetch {}
