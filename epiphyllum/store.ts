@@ -1,6 +1,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mapState } from 'vuex'
-import { DirectoryMap, SortMode, ViewMode } from '~/epiphyllum/utils'
+import {
+  ColorScheme,
+  DirectoryMap,
+  SortMode,
+  ViewMode,
+} from '~/epiphyllum/utils'
 
 @Component({
   computed: mapState('epiphyllum', {
@@ -10,10 +15,13 @@ import { DirectoryMap, SortMode, ViewMode } from '~/epiphyllum/utils'
     viewMode: (state) => state.viewMode,
     // @ts-ignore
     sortMode: (state) => state.sortMode,
+    // @ts-ignore
+    preferColorScheme: (state) => state.preferColorScheme,
   }),
 })
 export default class EpiphyllumStore extends Vue {
   protected directoryMap!: DirectoryMap
   protected viewMode!: ViewMode
   protected sortMode!: SortMode
+  protected preferColorScheme!: ColorScheme
 }

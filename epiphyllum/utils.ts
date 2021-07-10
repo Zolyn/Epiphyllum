@@ -40,15 +40,7 @@ interface Group {
   items: GroupItem[]
 }
 
-interface SortStatus {
-  mode: SortMode
-  icon:
-    | 'sort'
-    | 'calendar-ascending'
-    | 'calendar-descending'
-    | 'sort-ascending'
-    | 'sort-descending'
-}
+type ColorScheme = 'system' | 'light' | 'dark'
 
 /**
  * await帮助函数，帮助捕获异常
@@ -61,12 +53,12 @@ function awaitHelper<T>(promise: Promise<T>): Promise<[string, T | null]> {
 }
 
 function transformTime(time: number): string {
-  const tranformedRawDate = new Date(time * 1000)
-  const year = tranformedRawDate.getFullYear()
-  const month = tranformedRawDate.getMonth() + 1
-  const date = tranformedRawDate.getDate()
-  const hour = tranformedRawDate.getHours()
-  const minute = tranformedRawDate.getMinutes()
+  const transformedRawDate = new Date(time * 1000)
+  const year = transformedRawDate.getFullYear()
+  const month = transformedRawDate.getMonth() + 1
+  const date = transformedRawDate.getDate()
+  const hour = transformedRawDate.getHours()
+  const minute = transformedRawDate.getMinutes()
 
   function formatMinute(): string {
     if (minute < 10) {
@@ -132,9 +124,9 @@ export {
   BreadCrumbs,
   Group,
   GroupItem,
-  SortStatus,
   SortMode,
   ViewMode,
+  ColorScheme,
   transformTime,
   transformBytes,
   E,
