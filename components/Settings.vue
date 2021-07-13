@@ -15,19 +15,21 @@
             <v-row>
               <v-col cols="12">
                 <v-checkbox
-                  v-model="checkbox1"
+                  v-model="file"
                   prepend-icon="mdi-file"
                   label="显示文件"
                   dense
+                  @click="handleFileOption"
                 >
                 </v-checkbox>
               </v-col>
               <v-col cols="12">
                 <v-checkbox
-                  v-model="checkbox2"
+                  v-model="folder"
                   prepend-icon="mdi-folder"
                   label="显示文件夹"
                   dense
+                  @click="handleFolderOption"
                 ></v-checkbox>
               </v-col>
             </v-row>
@@ -70,8 +72,8 @@ interface Option {
 export default class ViewMode extends EpiphyllumStore {
   private icon = 'mdi-eye'
   private dialog = false
-  private checkbox1 = true
-  private checkbox2 = true
+  private file = true
+  private folder = true
   private radio = 'system'
   private options: Option[] = [
     {
@@ -95,6 +97,14 @@ export default class ViewMode extends EpiphyllumStore {
 
   private handleRadioClick(): void {
     this.$store.commit('epiphyllum/changeColorScheme', this.radio)
+  }
+
+  private handleFileOption(): void {
+    this.$store.commit('epiphyllum/changeFileDisplay', this.file)
+  }
+
+  private handleFolderOption(): void {
+    this.$store.commit('epiphyllum/changeFolderDisplay', this.folder)
   }
 }
 </script>
