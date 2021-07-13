@@ -26,8 +26,6 @@ type BreadCrumbs = BreadCrumbItem[]
 
 type SortMode = 'normal' | 'time-asc' | 'time-desc' | 'size-asc' | 'size-desc'
 
-type ViewMode = 'all' | 'files' | 'directories'
-
 interface GroupItem {
   title: string
   mode: SortMode
@@ -42,6 +40,11 @@ interface Group {
 
 type ColorScheme = 'system' | 'light' | 'dark'
 
+interface StateMap {
+  [p: string]: (state: any) => any
+}
+
+type ViewMode = 'all' | 'directory' | 'file'
 /**
  * await帮助函数，帮助捕获异常
  * 由于只需要关心结果是否存在，err始终为string
@@ -93,6 +96,16 @@ function transformBytes(bytes: number): string {
   return result
 }
 
+function generateStateMap(stateArr: string[]): StateMap {
+  const map: StateMap = {}
+  stateArr.map((val) => {
+    map[val] = (state) => state[val]
+    return undefined
+  })
+
+  return map
+}
+
 const E = (err: string) => new Error(err)
 
 const TE = (err: string) => new TypeError(err)
@@ -125,10 +138,11 @@ export {
   Group,
   GroupItem,
   SortMode,
-  ViewMode,
   ColorScheme,
+  ViewMode,
   transformTime,
   transformBytes,
+  generateStateMap,
   E,
   TE,
 }

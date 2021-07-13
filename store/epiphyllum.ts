@@ -1,10 +1,5 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import {
-  ColorScheme,
-  DirectoryMap,
-  SortMode,
-  ViewMode,
-} from '~/epiphyllum/utils'
+import { DirectoryMap, SortMode, ViewMode } from '~/epiphyllum/utils'
 
 @Module({
   name: 'epiphyllum',
@@ -14,9 +9,8 @@ import {
 export default class Epiphyllum extends VuexModule {
   private directoryMap: DirectoryMap = new Map()
   private isInitialized: boolean = false
-  private viewMode: ViewMode = 'all'
   private sortMode: SortMode = 'normal'
-  private preferColorScheme: ColorScheme = 'system'
+  private viewMode: ViewMode = 'all'
 
   @Mutation
   private setDirMap(map: DirectoryMap): void {
@@ -29,17 +23,12 @@ export default class Epiphyllum extends VuexModule {
   }
 
   @Mutation
-  private changeViewMode(mode: ViewMode): void {
-    this.viewMode = mode
-  }
-
-  @Mutation
   private changeSortMode(mode: SortMode): void {
     this.sortMode = mode
   }
 
   @Mutation
-  private changeColorScheme(scheme: ColorScheme): void {
-    this.preferColorScheme = scheme
+  private changeViewMode(mode: ViewMode): void {
+    this.viewMode = mode
   }
 }
