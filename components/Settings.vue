@@ -1,5 +1,5 @@
 <template>
-  <div id="view-mode">
+  <div id="settings">
     <v-btn icon @click.stop="handleDialogClick">
       <v-icon v-text="icon"></v-icon>
     </v-btn>
@@ -69,7 +69,7 @@ interface Option {
 }
 
 @Component
-export default class ViewMode extends EpiphyllumStore {
+export default class Settings extends EpiphyllumStore {
   private icon = 'mdi-eye'
   private dialog = false
   private file = true
