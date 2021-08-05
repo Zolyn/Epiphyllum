@@ -1,11 +1,11 @@
 <template>
   <v-btn icon @click="changeColorScheme">
-    <v-icon v-text="getSchemeIcon"></v-icon>
+    <v-icon v-text="schemeIcon"></v-icon>
   </v-btn>
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { ColorScheme } from '~/epiphyllum/utils'
 
 @Component
@@ -13,7 +13,7 @@ export default class ColorSchemeSwitch extends Vue {
   private preferColorScheme: ColorScheme = 'system'
   private colorSchemes: ColorScheme[] = ['light', 'dark', 'system']
 
-  private get getSchemeIcon(): string {
+  private get schemeIcon(): string {
     if (this.preferColorScheme === 'system') {
       return 'mdi-desktop-mac'
     } else if (this.$vuetify.theme.dark) {
@@ -26,6 +26,7 @@ export default class ColorSchemeSwitch extends Vue {
   private changeColorScheme(): void {
     this.colorSchemes.push(this.colorSchemes.shift() as ColorScheme)
     this.preferColorScheme = this.colorSchemes[0]
+    this.setColorScheme()
   }
 
   private setColorScheme(): void {
@@ -56,11 +57,6 @@ export default class ColorSchemeSwitch extends Vue {
 
     this.setColorScheme()
     this.registerListeners()
-  }
-
-  @Watch('preferColorScheme')
-  private onColorSchemeChanged(): void {
-    this.setColorScheme()
   }
 }
 </script>
