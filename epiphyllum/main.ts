@@ -1,8 +1,12 @@
 import { awaitHelper, E, DirectoryMap } from './utils'
 import { getUSSDirectoryTree } from '~/epiphyllum/upyun'
 import { UpyunSdk, EpiphyllumConfig, SDKs } from '~/epiphyllum/types'
+interface EpiphyllumEntryReturn {
+  host: string
+  result: DirectoryMap
+}
 
-async function main(): Promise<DirectoryMap> {
+async function main(): Promise<EpiphyllumEntryReturn> {
   // @ts-ignore
   const [importErr, module] = await awaitHelper(import('../epiphyllum.config'))
 
@@ -32,7 +36,10 @@ async function main(): Promise<DirectoryMap> {
     throw E(treeError)
   }
 
-  return result
+  return {
+    host: config.host,
+    result,
+  }
 }
 
 export { main as EpiphyllumEntry }
