@@ -20,6 +20,7 @@ type StorageTypes = 'upyun'
 
 interface Config<S extends SDKs> {
   storage: StorageTypes
+  host: string
   apiConfig?: S
 }
 
