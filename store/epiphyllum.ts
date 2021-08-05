@@ -1,5 +1,10 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { DirectoryMap, SortMode, ViewMode } from '~/epiphyllum/utils'
+import {
+  DirectoryMap,
+  FileMetaList,
+  SortMode,
+  ViewMode,
+} from '~/epiphyllum/utils'
 
 @Module({
   name: 'epiphyllum',
@@ -11,6 +16,8 @@ export default class Epiphyllum extends VuexModule {
   private isInitialized: boolean = false
   private sortMode: SortMode = 'normal'
   private viewMode: ViewMode = 'all'
+  private currentPath = '/'
+  private host = 'www.exampledomain.com'
 
   @Mutation
   private setDirMap(map: DirectoryMap): void {
@@ -30,5 +37,45 @@ export default class Epiphyllum extends VuexModule {
   @Mutation
   private changeViewMode(mode: ViewMode): void {
     this.viewMode = mode
+  }
+
+  @Mutation
+  private updatePath(path: string): void {
+    this.currentPath = decodeURIComponent(path)
+  }
+
+  @Mutation
+  private setHost(host: string): void {
+    this.host = host
+  }
+
+  private get currentFileList(): FileMetaList {
+    const directoryMeta = this.directoryMap.get(this.currentPath)
+    if (!directoryMeta) {
+      return []
+    }
+
+    const folderList = directoryMeta.files.filter((val) => val.isDir)
+    const fileList = directoryMeta.files.filter((val) => !val.isDir)
+    return [folderList, fileList]
+      .map((list) => {
+        switch (this.sortMode) {
+          case 'time-asc':
+            return list.sort((a, b) => a.time - b.time)
+          case 'time-desc':
+            return list.sort((a, b) => b.time - a.time)
+          case 'size-asc':
+            return list.sort((a, b) => a.size - b.size)
+          case 'size-desc':
+            return list.sort((a, b) => b.size - a.size)
+          default:
+            return list
+        }
+      })
+      .flat()
+  }
+
+  private get pathList(): string[] {
+    return [...this.directoryMap].map(([path]) => path)
   }
 }
