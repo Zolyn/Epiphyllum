@@ -9,13 +9,15 @@
         </template>
         <template #item="{ item }">
           <v-slide-item>
-            <v-breadcrumbs-item
-              :href="item.href"
-              :disabled="item.disabled"
-              @click.prevent="pushRouter(item.href)"
-            >
-              {{ item.text }}
-            </v-breadcrumbs-item>
+            <v-fade-transition hide-on-leave>
+              <v-breadcrumbs-item
+                :href="item.href"
+                :disabled="item.disabled"
+                @click.prevent="pushRouter(item.href)"
+              >
+                {{ item.text }}
+              </v-breadcrumbs-item>
+            </v-fade-transition>
           </v-slide-item>
         </template>
       </v-breadcrumbs>
@@ -25,16 +27,17 @@
 
 <script lang="ts">
 import { join } from 'path'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { BreadCrumbs } from '~/epiphyllum/utils'
+import EpiphyllumStore from '~/epiphyllum/store'
 
 @Component
-export default class BreadCrumbsNav extends Vue {
+export default class BreadCrumbsNav extends EpiphyllumStore {
   private arrow = 'mdi-chevron-right'
   private value = 1
 
   private get breadcrumbs(): BreadCrumbs {
-    const path = this.$route.path
+    const path = this.currentPath
     const breadcrumbList: BreadCrumbs = []
     const pathClip = path.split('/')
     pathClip.shift()
@@ -68,6 +71,7 @@ export default class BreadCrumbsNav extends Vue {
     this.$router.push(path)
   }
 
+  // 监听路径变化来更新v-slide-group组件
   private mounted(): void {
     this.$router.afterEach((): void => {
       this.value = Math.floor(Math.random() * 10)
