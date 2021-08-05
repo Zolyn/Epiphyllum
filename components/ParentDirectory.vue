@@ -13,30 +13,31 @@
 
 <script lang="ts">
 import { dirname, basename } from 'path'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
+import EpiphyllumStore from '~/epiphyllum/store'
 
 @Component
-export default class ParentDirectory extends Vue {
+export default class ParentDirectory extends EpiphyllumStore {
   private icon = 'mdi-arrow-left'
 
   private get content(): string {
-    const parentDir = dirname(this.$route.path)
+    const parentDir = dirname(this.currentPath)
 
-    if (this.$route.path === '/') {
+    if (this.currentPath === '/') {
       return '.'
     } else if (parentDir === '/') {
       return 'home'
     }
 
-    return basename(dirname(this.$route.path))
+    return basename(dirname(this.currentPath))
   }
 
   private get isRoot(): boolean {
-    return this.$route.path === '/'
+    return this.currentPath === '/'
   }
 
   private goToParent(): void {
-    this.$router.push(dirname(this.$route.path))
+    this.$router.push(dirname(this.currentPath))
   }
 }
 </script>
