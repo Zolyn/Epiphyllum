@@ -47,7 +47,7 @@
         <v-spacer></v-spacer>
         <path-edit></path-edit>
         <sort-menu></sort-menu>
-        <view-mode-switch></view-mode-switch>
+        <!--        <view-mode-switch></view-mode-switch>-->
       </template>
     </v-app-bar>
     <v-main>
@@ -106,5 +106,35 @@ export default class DefaultLayout extends Vue {
   }
 
   private title = 'Epiphyllum'
+
+  // 监听路径变化来更新state
+  private mounted(): void {
+    this.$router.afterEach((to) => {
+      this.$store.commit('epiphyllum/updatePath', to.path)
+    })
+  }
 }
 </script>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s;
+}
+
+.page-enter,
+.page-leave-to {
+  opacity: 0;
+}
+
+.slide-bottom-enter-active,
+.slide-bottom-leave-active {
+  transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+}
+
+.slide-bottom-enter,
+.slide-bottom-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0);
+}
+</style>
