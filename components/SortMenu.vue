@@ -62,15 +62,15 @@ export default class SortMenu extends Vue {
   private listGroups: Group[] = [
     {
       prependIcon: 'mdi-clock',
-      title: '修改时间',
+      title: '时间',
       items: [
         {
-          title: '升序',
+          title: '最旧',
           mode: 'time-asc',
           icon: 'mdi-sort-clock-ascending',
         },
         {
-          title: '降序',
+          title: '最新',
           mode: 'time-desc',
           icon: 'mdi-sort-clock-descending',
         },
@@ -81,12 +81,12 @@ export default class SortMenu extends Vue {
       prependIcon: 'mdi-database',
       items: [
         {
-          title: '升序',
+          title: '最小',
           mode: 'size-asc',
           icon: 'mdi-sort-ascending',
         },
         {
-          title: '降序',
+          title: '最大',
           mode: 'size-desc',
           icon: 'mdi-sort-descending',
         },
