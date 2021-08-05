@@ -10,26 +10,39 @@
           <v-container>
             <v-row justify="center" align="center">
               <v-col cols="12">
-                <v-form
-                  v-model="valid"
-                  lazy-validation
-                  @submit.prevent="jumpToNewPath"
+                <v-autocomplete
+                  v-model="inputValue"
+                  :items="pathList"
+                  label="更改当前路径至"
+                  prepend-icon="mdi-folder"
+                  :menu-props="menuProps"
+                  :rules="rules"
+                  hide-no-data
+                  open-on-clear
+                  clearable
+                  @update:error="updateStatus"
                 >
-                  <v-text-field
-                    v-model="inputValue"
-                    :rules="[rules.required]"
-                    label="更改当前路径至"
-                    prepend-icon="mdi-folder"
-                    clearable
-                  ></v-text-field>
-                </v-form>
+                </v-autocomplete>
+                <!--                <v-form-->
+                <!--                  v-model="valid"-->
+                <!--                  lazy-validation-->
+                <!--                  @submit.prevent="jumpToNewPath"-->
+                <!--                >-->
+                <!--                  <v-text-field-->
+                <!--                    v-model="inputValue"-->
+                <!--                    :rules="[rules.required]"-->
+                <!--                    label="更改当前路径至"-->
+                <!--                    prepend-icon="mdi-folder"-->
+                <!--                    clearable-->
+                <!--                  ></v-text-field>-->
+                <!--                </v-form>-->
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="cancel">取消</v-btn>
           <v-btn
             color="blue darken-1"
             text
@@ -45,20 +58,21 @@
 
 <script lang="ts">
 import { resolve } from 'path'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
+import EpiphyllumStore from '~/epiphyllum/store'
 
 type ValidateFunc = (val: string) => boolean | string
 
-interface Rules extends Record<'required', ValidateFunc> {}
-
 @Component
-export default class PathEdit extends Vue {
+export default class PathEdit extends EpiphyllumStore {
   private dialog = false
   private pencil = 'mdi-folder-edit'
   private inputValue = '/'
   private valid = true
-  private rules: Rules = {
-    required: (val) => !!val || '需要填写',
+  private rules: ValidateFunc[] = [(val) => !!val || '需要填写']
+
+  private menuProps = {
+    transition: 'slide-y-transition',
   }
 
   private jumpToNewPath(): void {
@@ -72,11 +86,19 @@ export default class PathEdit extends Vue {
     })
   }
 
-  private mounted(): void {
-    this.inputValue = this.$route.path
-    this.$router.afterEach((to): void => {
-      this.inputValue = to.path
-    })
+  private cancel(): void {
+    this.inputValue = this.currentPath
+    this.dialog = false
+  }
+
+  private updateStatus(hasError: boolean): void {
+    this.valid = !hasError
+  }
+
+  @Watch('currentPath')
+  private onPathChanged(): void {
+    console.log('Path changed.')
+    this.inputValue = this.currentPath
   }
 }
 </script>
