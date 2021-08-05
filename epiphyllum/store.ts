@@ -1,19 +1,36 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
 import {
   DirectoryMap,
+  FileMetaList,
   SortMode,
-  generateStateMap,
   ViewMode,
 } from '~/epiphyllum/utils'
 
-const stateArray = ['directoryMap', 'sortMode', 'viewMode']
+const { mapState, mapGetters } = createNamespacedHelpers('epiphyllum')
+const stateArray = [
+  'directoryMap',
+  'isInitialized',
+  'sortMode',
+  'viewMode',
+  'currentPath',
+  'host',
+]
+const getterArray = ['pathList', 'currentFileList']
 
 @Component({
-  computed: mapState('epiphyllum', generateStateMap(stateArray)),
+  computed: {
+    ...mapState(stateArray),
+    ...mapGetters(getterArray),
+  },
 })
 export default class EpiphyllumStore extends Vue {
   protected directoryMap!: DirectoryMap
+  protected isInitialized!: boolean
   protected sortMode!: SortMode
   protected viewMode!: ViewMode
+  protected currentPath!: string
+  protected currentFileList!: FileMetaList
+  protected pathList!: string[]
+  protected host!: string
 }
