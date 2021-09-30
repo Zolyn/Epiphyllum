@@ -46,8 +46,10 @@
         <bread-crumbs-nav></bread-crumbs-nav>
         <v-spacer></v-spacer>
         <path-edit></path-edit>
-        <sort-menu></sort-menu>
-        <!--        <view-mode-switch></view-mode-switch>-->
+        <v-expand-x-transition>
+          <sort-menu v-show="!(viewMode === 'table')"></sort-menu>
+        </v-expand-x-transition>
+        <view-mode-switch></view-mode-switch>
       </template>
     </v-app-bar>
     <v-main>
@@ -73,12 +75,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import BreadCrumbsNav from '~/components/BreadCrumbsNav.vue'
-import SortMenu from '~/components/SortMenu.vue'
-import PathEdit from '~/components/PathEdit.vue'
-import ViewModeSwitch from '~/components/ViewModeSwitch.vue'
-import ColorSchemeSwitch from '~/components/ColorSchemeSwitch.vue'
+import { Component } from 'vue-property-decorator'
+import BreadCrumbsNav from '~/components/NavBar/BreadCrumbsNav.vue'
+import SortMenu from '~/components/NavBar/SortMenu.vue'
+import PathEdit from '~/components/NavBar/PathEdit.vue'
+import ViewModeSwitch from '~/components/NavBar/ViewModeSwitch.vue'
+import ColorSchemeSwitch from '~/components/NavBar/ColorSchemeSwitch.vue'
+import EpiphyllumStore from '~/epiphyllum/store'
 
 @Component({
   components: {
@@ -89,7 +92,7 @@ import ColorSchemeSwitch from '~/components/ColorSchemeSwitch.vue'
     ColorSchemeSwitch,
   },
 })
-export default class DefaultLayout extends Vue {
+export default class DefaultLayout extends EpiphyllumStore {
   private drawer = false
   private items = [
     {

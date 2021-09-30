@@ -1,12 +1,12 @@
-import { awaitHelper, E, DirectoryMap } from './utils'
-import { getUSSDirectoryTree } from '~/epiphyllum/upyun'
+import { awaitHelper, DirectoryMap, E } from './utils'
+import { getUSSDirectoryTree } from '~/epiphyllum/storage/upyun'
 import { UpyunSdk, EpiphyllumConfig, SDKs } from '~/epiphyllum/types'
 interface EpiphyllumEntryReturn {
   host: string
   result: DirectoryMap
 }
 
-async function main(): Promise<EpiphyllumEntryReturn> {
+async function EpiphyllumEntry(): Promise<EpiphyllumEntryReturn> {
   // @ts-ignore
   const [importErr, module] = await awaitHelper(import('../epiphyllum.config'))
 
@@ -42,4 +42,4 @@ async function main(): Promise<EpiphyllumEntryReturn> {
   }
 }
 
-export { main as EpiphyllumEntry }
+export { EpiphyllumEntry }

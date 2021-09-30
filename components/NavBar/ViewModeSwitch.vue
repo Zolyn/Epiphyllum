@@ -12,8 +12,12 @@ import { ViewMode } from '~/epiphyllum/utils'
 
 @Component
 export default class ViewModeSwitch extends Vue {
-  private viewMode: ViewMode[] = ['all', 'directory', 'file']
-  private icons = ['mdi-folder-table', 'mdi-folder', 'mdi-file']
+  private viewMode: ViewMode[] = ['list', 'table']
+  private icons = [
+    'mdi-format-list-bulleted-square',
+    'mdi-table-large',
+    // 'mdi-view-module',
+  ]
 
   private changeViewMode(): void {
     this.viewMode.push(this.viewMode.shift() as ViewMode)

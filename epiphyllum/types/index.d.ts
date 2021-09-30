@@ -1,3 +1,5 @@
+// @ts-ignore
+
 declare global {
   namespace NodeJS {
     export interface ProcessEnv {

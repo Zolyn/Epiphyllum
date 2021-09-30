@@ -1,10 +1,14 @@
+import { basename, dirname, join } from 'path'
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import {
   DirectoryMap,
+  FileMeta,
   FileMetaList,
   SortMode,
   ViewMode,
 } from '~/epiphyllum/utils'
+
+type SortKey = 'time' | 'size'
 
 @Module({
   name: 'epiphyllum',
@@ -15,9 +19,19 @@ export default class Epiphyllum extends VuexModule {
   private directoryMap: DirectoryMap = new Map()
   private isInitialized: boolean = false
   private sortMode: SortMode = 'normal'
-  private viewMode: ViewMode = 'all'
+  private viewMode: ViewMode = 'list'
   private currentPath = '/'
   private host = 'www.exampledomain.com'
+  private previewItem: FileMeta = {
+    isDir: false,
+    pathname: '',
+    type: 'file',
+    icon: 'file-cloud',
+    time: 0,
+    size: 0,
+    transformedTime: '-',
+    transformedSize: '-',
+  }
 
   @Mutation
   private setDirMap(map: DirectoryMap): void {
@@ -25,7 +39,12 @@ export default class Epiphyllum extends VuexModule {
   }
 
   @Mutation
-  private initialize(): void {
+  private setHost(host: string): void {
+    this.host = host
+  }
+
+  @Mutation
+  private setInitializationStatus(): void {
     this.isInitialized = true
   }
 
@@ -45,8 +64,26 @@ export default class Epiphyllum extends VuexModule {
   }
 
   @Mutation
-  private setHost(host: string): void {
-    this.host = host
+  private updatePreviewItem(item: FileMeta): void {
+    this.previewItem = item
+  }
+
+  private get downloadLink(): string {
+    const hostClip = this.host.split('/')
+    hostClip[2] = join(hostClip[2], this.currentPath, this.previewItem.pathname)
+    return hostClip.join('/')
+  }
+
+  private get parentDirectory(): string {
+    const parentDir = dirname(this.currentPath)
+
+    if (this.currentPath === '/') {
+      return '.'
+    } else if (parentDir === '/') {
+      return 'home'
+    }
+
+    return basename(dirname(this.currentPath))
   }
 
   private get currentFileList(): FileMetaList {
@@ -57,22 +94,40 @@ export default class Epiphyllum extends VuexModule {
 
     const folderList = directoryMeta.files.filter((val) => val.isDir)
     const fileList = directoryMeta.files.filter((val) => !val.isDir)
-    return [folderList, fileList]
-      .map((list) => {
-        switch (this.sortMode) {
-          case 'time-asc':
-            return list.sort((a, b) => a.time - b.time)
-          case 'time-desc':
-            return list.sort((a, b) => b.time - a.time)
-          case 'size-asc':
-            return list.sort((a, b) => a.size - b.size)
-          case 'size-desc':
-            return list.sort((a, b) => b.size - a.size)
-          default:
-            return list
-        }
-      })
-      .flat()
+
+    switch (this.viewMode) {
+      case 'list':
+        return [folderList, fileList]
+          .map((list) => {
+            let key: SortKey
+            if (this.sortMode.match('time')) {
+              key = 'time'
+            } else {
+              key = 'size'
+            }
+
+            if (this.sortMode === 'normal') {
+              return list
+            }
+
+            return list.sort((a, b) => {
+              if (this.sortMode.match('desc')) {
+                ;[a, b] = [b, a]
+              }
+
+              if (this.sortMode.match('name')) {
+                return a.pathname.localeCompare(b.pathname, 'zh')
+              }
+
+              return a[key] - b[key]
+            })
+          })
+          .flat()
+      case 'table':
+        return folderList.concat(fileList)
+      default:
+        return folderList.concat(fileList)
+    }
   }
 
   private get pathList(): string[] {

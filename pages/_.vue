@@ -4,32 +4,15 @@
       <v-container>
         <v-row align="center" justify="center">
           <v-col cols="11">
-            <v-list>
-              <v-list-item-group color="primary">
-                <div v-if="noData" id="err-no-data">
-                  <v-list-item disabled>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >Error: No such file or directory.</v-list-item-title
-                      >
-                    </v-list-item-content>
-                  </v-list-item>
-                </div>
-                <div v-else-if="initFailed" id="err-init-failed">
-                  <v-list-item disabled>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >Error: Initialization failed.</v-list-item-title
-                      >
-                    </v-list-item-content>
-                  </v-list-item>
-                </div>
-                <div v-else id="view-wrapper">
-                  <parent-directory></parent-directory>
-                  <file-list-item></file-list-item>
-                </div>
-              </v-list-item-group>
-            </v-list>
+            <v-slide-x-transition hide-on-leave>
+              <error-container v-if="initFailed || noData">
+                <template #content>
+                  <v-card-text v-if="initFailed"> 初始化失败。 </v-card-text>
+                  <v-card-text v-else> 没有这样的文件或目录。 </v-card-text>
+                </template>
+              </error-container>
+              <component :is="getComponent" v-else></component>
+            </v-slide-x-transition>
           </v-col>
         </v-row>
       </v-container>
@@ -38,28 +21,37 @@
 </template>
 
 <script lang="ts">
-import { dirname, basename, join } from 'path'
+import { dirname, basename } from 'path'
 import { Component } from 'vue-property-decorator'
-import FileListItem from '~/components/FileListItem.vue'
-import ParentDirectory from '~/components/ParentDirectory.vue'
+import { ViewMode } from '~/epiphyllum/utils'
+import FileListItem from '~/components/View/FileListItem.vue'
+import FileTable from '~/components/View/FileTable.vue'
+import ErrorContainer from '~/components/Error/ErrorContainer.vue'
 import EpiphyllumFetch from '~/epiphyllum/fetch'
 
 @Component({
   components: {
     FileListItem,
-    ParentDirectory,
+    FileTable,
+    ErrorContainer,
   },
 })
 export default class FileIndexPage extends EpiphyllumFetch {
   private noData = false
   private initFailed = false
+  private viewModeMap: Map<ViewMode, string> = new Map([
+    ['list', 'FileListItem'],
+    ['table', 'FileTable'],
+  ])
 
   private mounted(): void {
     console.log(this.currentPath)
-    if (this.pathList.includes(this.currentPath)) {
-      return
-    } else if (!this.isInitialized) {
+    if (!this.isInitialized) {
       this.initFailed = true
+      return
+    }
+
+    if (this.pathList.includes(this.currentPath)) {
       return
     }
 
@@ -79,9 +71,11 @@ export default class FileIndexPage extends EpiphyllumFetch {
       return
     }
 
-    const hostClip = this.host.split('/')
-    hostClip[2] = join(hostClip[2], this.currentPath)
-    window.location.href = hostClip.join('/')
+    window.open(this.downloadLink)
+  }
+
+  private get getComponent(): string {
+    return this.viewModeMap.get(this.viewMode) ?? 'FileListItem'
   }
 }
 </script>

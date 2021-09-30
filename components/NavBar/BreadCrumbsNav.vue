@@ -9,7 +9,7 @@
         </template>
         <template #item="{ item }">
           <v-slide-item>
-            <v-fade-transition hide-on-leave>
+            <v-slide-x-transition hide-on-leave>
               <v-breadcrumbs-item
                 :href="item.href"
                 :disabled="item.disabled"
@@ -17,7 +17,7 @@
               >
                 {{ item.text }}
               </v-breadcrumbs-item>
-            </v-fade-transition>
+            </v-slide-x-transition>
           </v-slide-item>
         </template>
       </v-breadcrumbs>

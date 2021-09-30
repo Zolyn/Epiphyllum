@@ -2,48 +2,53 @@
   <div id="sort-menu">
     <v-menu
       transition="slide-y-transition"
-      close-delay="100"
       :close-on-content-click="closeOnContentClick"
-      open-on-hover
-      open-delay="200"
       @input="handleInput"
     >
-      <template #activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-icon dense v-text="currentMenuIcon"></v-icon>
-        </v-btn>
+      <template #activator="{ on: menu, attrs }">
+        <v-tooltip top>
+          <template #activator="{ on: tooltip }">
+            <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+              <v-icon dense v-text="`mdi-${currentMenuIcon}`"></v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            <span>{{ currentToolTip }}</span>
+          </template>
+        </v-tooltip>
       </template>
       <v-list dense nav>
         <v-list-group
           v-for="(group, index) in listGroups"
-          :key="'group' + index"
+          :key="`group-${index}`"
           :value="listGroupStatus"
-          :prepend-icon="group.prependIcon"
+          :prepend-icon="`mdi-${group.prependIcon}`"
           @click="handleGroupClick"
         >
           <template #activator>
             <v-list-item-title v-text="group.title"></v-list-item-title>
           </template>
-          <v-list-item
-            v-for="(item, itemIndex) in group.items"
-            :key="'groupitem' + itemIndex"
-            link
-            @click="handleGroupItemClick(item)"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <template #default>
+            <v-list-item
+              v-for="(item, itemIndex) in group.items"
+              :key="`groupItem-${itemIndex}`"
+              @click="handleGroupItemClick(item)"
+            >
+              <v-list-item-icon>
+                <v-icon v-text="`mdi-${item.icon}`"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
         </v-list-group>
         <v-list-item @click="fallback">
           <v-list-item-icon>
             <v-icon>mdi-sort</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Normal</v-list-item-title>
+            <v-list-item-title>默认</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -61,45 +66,63 @@ export default class SortMenu extends Vue {
   private listGroupStatus: boolean | undefined = false
   private listGroups: Group[] = [
     {
-      prependIcon: 'mdi-clock',
+      prependIcon: 'sort-alphabetical-variant',
+      title: '名称',
+      items: [
+        {
+          title: 'A-Z',
+          mode: 'name-asc',
+          icon: 'sort-alphabetical-ascending-variant',
+        },
+        {
+          title: 'Z-A',
+          mode: 'name-desc',
+          icon: 'sort-alphabetical-descending-variant',
+        },
+      ],
+    },
+    {
+      prependIcon: 'clock',
       title: '时间',
       items: [
         {
           title: '最旧',
           mode: 'time-asc',
-          icon: 'mdi-sort-clock-ascending',
+          icon: 'sort-clock-ascending',
         },
         {
           title: '最新',
           mode: 'time-desc',
-          icon: 'mdi-sort-clock-descending',
+          icon: 'sort-clock-descending',
         },
       ],
     },
     {
       title: '大小',
-      prependIcon: 'mdi-database',
+      prependIcon: 'database',
       items: [
         {
           title: '最小',
           mode: 'size-asc',
-          icon: 'mdi-sort-ascending',
+          icon: 'sort-ascending',
         },
         {
           title: '最大',
           mode: 'size-desc',
-          icon: 'mdi-sort-descending',
+          icon: 'sort-descending',
         },
       ],
     },
   ]
 
-  private currentMenuIcon = 'mdi-sort'
+  private currentMenuIcon = 'sort'
+  private currentToolTip = '排序-默认'
 
   private handleGroupItemClick(item: GroupItem): void {
     this.closeOnContentClick = true
     this.$store.commit('epiphyllum/changeSortMode', item.mode)
     this.currentMenuIcon = item.icon
+    this.currentToolTip = `排序-${item.title}`
   }
 
   private handleGroupClick(): void {
@@ -117,7 +140,8 @@ export default class SortMenu extends Vue {
   private fallback(): void {
     this.closeOnContentClick = true
     this.$store.commit('epiphyllum/changeSortMode', 'normal')
-    this.currentMenuIcon = 'mdi-sort'
+    this.currentMenuIcon = 'sort'
+    this.currentToolTip = '排序-默认'
   }
 }
 </script>

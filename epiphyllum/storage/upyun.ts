@@ -2,13 +2,14 @@ import { join } from 'path'
 import {
   awaitHelper,
   DirectoryMap,
-  E,
   FileMeta,
   FileMetaList,
-  TE,
+  getFileTypeAndIcon,
   transformBytes,
   transformTime,
-} from './utils'
+  E,
+  TE,
+} from '../utils'
 import { UpyunSdk } from '~/epiphyllum/types'
 
 interface USSListFile {
@@ -57,11 +58,15 @@ async function getUSSDirectoryTree({
     }
 
     for (const { type: fileType, name, time, size } of currentFiles.files) {
+      const { type, icon } = getFileTypeAndIcon(name)
+
       const fileMeta: FileMeta = {
         isDir: false,
         pathname: name,
         transformedTime: transformTime(time),
         transformedSize: transformBytes(size),
+        type,
+        icon,
         time,
         size,
       }
@@ -75,6 +80,8 @@ async function getUSSDirectoryTree({
         }
 
         fileMeta.isDir = true
+        fileMeta.icon = 'folder'
+        fileMeta.type = 'folder'
       }
 
       fileMetaList.push(fileMeta)

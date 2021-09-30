@@ -2,6 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { createNamespacedHelpers } from 'vuex'
 import {
   DirectoryMap,
+  FileMeta,
   FileMetaList,
   SortMode,
   ViewMode,
@@ -14,9 +15,14 @@ const stateArray = [
   'sortMode',
   'viewMode',
   'currentPath',
-  'host',
+  'previewItem',
 ]
-const getterArray = ['pathList', 'currentFileList']
+const getterArray = [
+  'parentDirectory',
+  'pathList',
+  'currentFileList',
+  'downloadLink',
+]
 
 @Component({
   computed: {
@@ -32,5 +38,7 @@ export default class EpiphyllumStore extends Vue {
   protected currentPath!: string
   protected currentFileList!: FileMetaList
   protected pathList!: string[]
-  protected host!: string
+  protected parentDirectory!: string
+  protected previewItem!: FileMeta
+  protected downloadLink!: string
 }
